@@ -1,5 +1,4 @@
 import openai
-import openai.error
 from typing import List, Dict
 import logging
 import time
@@ -75,7 +74,7 @@ class Chat:
                         top_p = 1.0
                     )
                 break
-            except openai.error.RateLimitError as e1:
+            except openai.RateLimitError as e1:
                 if key_id == len(OPENAI_APIS) - 1:
                     key_id = 0
                     logger.warning("Trigger rate limit error for 2 times, skip")

@@ -1,11 +1,11 @@
 
-from library.sgp.sgp_parser import get_antlr_parsing
-from library.parsing.callgraph import CallGraph
+from src.library.sgp.sgp_parser import get_antlr_parsing
+from src.library.parsing.callgraph import CallGraph
 import os
 import re
 
-from sgp.utilities.contract_extractor import extract_state_variables_from_code
-from .project_settings import FILE_PARTIAL_WHITE_LIST, PATH_PARTIAL_WHITE_LIST, PATH_WHITE_LIST, OPENZEPPELIN_CONTRACTS,OPENZEPPELIN_FUNCTIONS
+from src.library.sgp.utilities.contract_extractor import extract_state_variables_from_code
+from src.project.project_settings import FILE_PARTIAL_WHITE_LIST, PATH_PARTIAL_WHITE_LIST, PATH_WHITE_LIST, OPENZEPPELIN_CONTRACTS,OPENZEPPELIN_FUNCTIONS
 
 class Function(dict):
     def __init__(self, file, contract, func):
@@ -186,10 +186,10 @@ def parse_project(project_path, project_filter = None):
 
 
 if __name__ == '__main__':
-    from library.dataset_utils import load_dataset
-    dataset_base = "../../dataset/agent-v1-c4"
+    from src.library.dataset_utils import load_dataset
+    dataset_base = "../dataset/agent-v1-c4"
     projects = load_dataset(dataset_base)
-    project = projects['whalefall']
+    project = projects['theo']
 
     project_path = os.path.join(project['base_path'], project['path'])
     white_files, white_functions = project.get('files', []), project.get('functions', [])

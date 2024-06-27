@@ -4,6 +4,8 @@ import threading
 import time
 import requests
 import tqdm
+from openai import OpenAI
+
 from library.chatgpt_api2 import *
 from sklearn.metrics.pairwise import cosine_similarity
 from library.embedding_api import get_embbedding
@@ -41,14 +43,26 @@ class AiEngine(object):
                 }
             ]
         }
-        response = requests.post(f'https://{api_base}/v1/chat/completions', headers=headers, json=data)
-        try:
-            response_josn = response.json()
-        except Exception as e:
-            return ''
-        if 'choices' not in response_josn:
-            return ''
-        return response_josn['choices'][0]['message']['content']
+        client = OpenAI()
+
+        completion = client.chat.completions.create(
+            model=os.getenv('VUL_MODEL_ID'),
+            messages=[
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ]
+        )
+        # response = requests.post(f'https://{api_base}/v1/chat/completions', headers=headers, json=data)
+        # try:
+        #     response_josn = response.json()
+        # except Exception as e:
+        #     return ''
+        # if 'choices' not in response_josn:
+        #     return ''
+        # return response_josn['choices'][0]['message']['content']
+        return completion.choices[0].message.content
     def calculate_similarity(self,input_text1, input_text2):
         embedding1 = get_embbedding(input_text1)
         embedding2 = get_embbedding(input_text2)

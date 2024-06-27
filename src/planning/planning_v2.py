@@ -5,6 +5,7 @@ from library.chatgpt_api2 import *
 from dao.entity import Project_Task
 import os, sys
 from tqdm import tqdm
+from openai import OpenAI
 import pickle
 from library.vectorutils import get_top_k_similar, find_elbow_point, plot_elbow_curve
 from library.embedding_api import get_embbedding
@@ -57,12 +58,35 @@ class PlanningV2(object):
                 }
             ]
         }
-        response = requests.post(f'https://{api_base}/v1/chat/completions', headers=headers, json=data)
+        client = OpenAI()
 
-        response_josn = response.json()
-        if 'choices' not in response_josn:
-            return ''
-        return response_josn['choices'][0]['message']['content']
+        completion = client.chat.completions.create(
+            model=os.getenv('BUSINESS_FLOW_MODEL_ID'),
+            response_format= {"type": "json_object"},
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are a helpful assistant designed to output JSON."
+                },
+                {
+                    "role": "user",
+                    "content": question
+                }
+            ]
+        )
+
+        response = completion
+
+        # proxies = {
+        #     'http': 'http://127.0.0.1:15732',
+        #     'https': 'http://127.0.0.1:15732',
+        # }
+        # response = requests.post(f'https://{api_base}/v1/chat/completions', headers=headers, json=data,verify=False)
+        return completion.choices[0].message.content
+        # response_josn = response.json()
+        # if 'choices' not in response_josn:
+        #     return ''
+        # return response_josn['choices'][0]['message']['content']
     def extract_filtered_functions(self, json_string):
         """
         Extracts function names from a JSON string. For function names and keys containing a period,

@@ -10,7 +10,9 @@ from planning import PlanningV1, PlanningV2
 from prompts import prompts
 from sqlalchemy import create_engine
 from dao import CacheManager, ProjectTaskMgr
-
+import os
+# os.environ["http_proxy"] = "http://127.0.0.1:15732"
+# os.environ["https_proxy"] = "http://127.0.0.1:15732"
 def scan_project(project, db_engine, use_vectorRule = False):
     llm = createGptApi(audit_config, "pezzo", prompts, CacheManager(db_engine))
 
@@ -102,7 +104,7 @@ def generate_json(output_path,project_id):
     with open(file_name, 'w') as file:
         file.write(json_string)
 def show_antlr_use():
-    from sgp.utilities.contract_extractor import extract_function_from_solidity
+    from library.sgp.utilities.contract_extractor import extract_function_from_solidity
 
     # 提取函数体
     function_body = extract_function_from_solidity('divUp', 'test.sol')
@@ -122,15 +124,16 @@ if __name__ == '__main__':
         db_url_from = os.getenv("DATABASE_URL")
         engine = create_engine(db_url_from)
         
-        dataset_base = "./src/dataset/agent-v1-c4"
+        dataset_base = r"E:\Projects\trickPrompt-engine\src\dataset\agent-v1-c4"
         projects = load_dataset(dataset_base)
 
         # project_id = 'labrado'
         # project_id = 'whalefall'
         # project_id = 'od-contracts'
         # project_id = 'nextgen'
-        project_id = 'zkdexall0604'
-        project_path = ''
+        project_id = 'theo'
+        # project_path = ''
+        # project_path = 'theo'
         project = Project(project_id, projects[project_id])
         
         cmd = 'detect_vul'

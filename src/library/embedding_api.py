@@ -1,7 +1,7 @@
 import sys
 import time
 import openai
-from openai.error import AuthenticationError
+from openai import AuthenticationError
 
 PRETRAIN_MODEL_OPENAI = "text-embedding-ada-002"
 
