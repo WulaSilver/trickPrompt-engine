@@ -2,6 +2,8 @@ from concurrent.futures import ThreadPoolExecutor
 import re
 import threading
 import time
+import random
+
 import requests
 import tqdm
 from openai import OpenAI
@@ -26,7 +28,14 @@ class AiEngine(object):
         self.planning.do_planning()
         # self.project_taskmgr.add_tasks(tasks)
         # for task in self.planning.do_planning():
-        #     self.project_taskmgr.add_tasks(task)    
+        #     self.project_taskmgr.add_tasks(task)
+
+    def random_sleep(self):
+        # 随机睡眠2-4
+        sleep_time = random.uniform(2, 4)
+        print(f"Sleeping for {sleep_time:.2f} seconds...")
+        time.sleep(sleep_time)
+
     def ask_openai_common(self,prompt):
         api_base = os.getenv('OPENAI_API_BASE', 'api.openai.com')  # Replace with your actual OpenAI API base URL
         api_key = os.getenv('OPENAI_API_KEY')  # Replace with your actual OpenAI API key
@@ -43,6 +52,7 @@ class AiEngine(object):
                 }
             ]
         }
+        self.random_sleep()
         client = OpenAI()
 
         completion = client.chat.completions.create(
